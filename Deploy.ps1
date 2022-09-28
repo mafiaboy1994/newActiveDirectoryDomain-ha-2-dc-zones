@@ -9,6 +9,7 @@ $storageAccountName = "st" + $projectName + $companyName + $env + $location
 $containerName = "templates"
 
 $mainTemplateURL = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/azuredeploy.json"
+$mainTemplateParamsURL = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/azuredeploy.parameters.json"
 $configureADBDC = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/nestedtemplates/configureADBDC.json"
 $configureNIC = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/nestedtemplates/nic.json"
 $configureVNET = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/nestedtemplates/vnet.json"
@@ -20,6 +21,7 @@ $createADPDCPS = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirect
 
 
 $mainFileName = "azuredeploy.json" # File name used for downloading and uploading the main template.Add-PSSnapin
+$mainParamsFileName = ".\azuredeploy.parameters.json"
 $ADBDCFileName = "configureADBDC.json"
 $NICFileName = "nic.json"
 $VNETFileName = "vnet.json"
@@ -32,6 +34,7 @@ $createADPDCPSFileName = "CreateADPDC.ps1"
 mkdir $home/nestedtemplates
 mkdir $home/DSC
 Invoke-WebRequest -Uri $mainTemplateURL -OutFile "$home/$mainFileName"
+Invoke-WebRequest -Uri $mainTemplateParamsURL -OutFile "$home/$mainParamsFileName"
 Invoke-WebRequest -Uri $configureADBDC -OutFile "$home/nestedtemplates/$ADBDCFileName"
 Invoke-WebRequest -Uri $configureNIC -OutFile "$home/nestedtemplates/$NICFileName"
 Invoke-WebRequest -Uri $configureVNET -OutFile "$home/nestedtemplates/$VNETFileName"
@@ -104,6 +107,7 @@ New-AzResourceGroupDeployment `
 -Name DeployMainTemplate `
 -ResourceGroupName $resourceGroupName `
 -TemplateUri $mainTemplateUri `
+-TemplateParameterFile 
 -QueryString $newSas `
 -Verbose
 
