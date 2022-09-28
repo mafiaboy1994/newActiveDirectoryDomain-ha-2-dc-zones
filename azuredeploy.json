@@ -253,7 +253,7 @@
             "function": "CreateADPDC"
           },
           "modulesUrl":"[uri(parameters('_artifactsLocation'), 'DSC/CreateADPDC.ps1.zip')]" ,
-          "configurationFunction": "CreateADPDC",
+          "configurationFunction": "CreateADPDC.ps1\\CreateADPDC",
           "configurationArguments": {
             "domainName": "[parameters('domainName')]"
           }
