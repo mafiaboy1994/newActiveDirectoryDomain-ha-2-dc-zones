@@ -12,9 +12,9 @@ $mainTemplateURL = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDire
 $configureADBDC = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/nestedtemplates/configureADBDC.json"
 $configureNIC = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/nestedtemplates/nic.json"
 $configureVNET = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/nestedtemplates/vnet.json"
-#$prepareADBDCZip = "https://github.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/raw/main/DSC/PrepareADBDC.ps1.zip"
+$prepareADBDCZip = "https://github.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/raw/main/DSC/PrepareADBDC.ps1.zip"
 $prepareADBDCPS = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/DSC/PrepareADBDC.ps1"
-#$createADPDCZip = "https://github.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/raw/main/DSC/CreateADPDC.ps1.zip"
+$createADPDCZip = "https://github.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/raw/main/DSC/CreateADPDC.ps1.zip"
 $createADPDCPS = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/DSC/CreateADPDC.ps1"
 
 
@@ -23,7 +23,7 @@ $mainFileName = "azuredeploy.json" # File name used for downloading and uploadin
 $ADBDCFileName = "configureADBDC.json"
 $NICFileName = "nic.json"
 $VNETFileName = "vnet.json"
-$prepareADBDCZipFileName = "PrepareADBDC.ps1"
+$prepareADBDCZipFileName = "PrepareADBDC.zip"
 $prepareADBDCPSFileName = "PrepareADBDC.ps1"
 $createADPDCZipFileName = "CreateADPDC.ps1.zip"
 $createADPDCPSFileName = "CreateADPDC.ps1"
@@ -36,10 +36,10 @@ Invoke-WebRequest -Uri $configureADBDC -OutFile "$home/nestedtemplates/$ADBDCFil
 Invoke-WebRequest -Uri $configureNIC -OutFile "$home/nestedtemplates/$NICFileName"
 Invoke-WebRequest -Uri $configureVNET -OutFile "$home/nestedtemplates/$VNETFileName"
 
-Invoke-WebRequest -Uri $prepareADBDCZip -OutFile "$home/DSC/$prepareADBDCZip"
-Invoke-WebRequest -Uri $prepareADBDCPS -OutFile "$home/DSC/$prepareADBDCPS"
-Invoke-WebRequest -Uri $createADPDCZip -OutFile "$home/DSC/$createADPDCZip"
-Invoke-WebRequest -Uri $createADPDCPS -OutFile "$home/DSC/$createADPDCPS"
+Invoke-WebRequest -Uri $prepareADBDCZip -OutFile "$home/DSC/$prepareADBDCZipFileName"
+Invoke-WebRequest -Uri $prepareADBDCPS -OutFile "$home/DSC/$prepareADBDCPSFileName"
+Invoke-WebRequest -Uri $createADPDCZip -OutFile "$home/DSC/$createADPDCZipFileName"
+Invoke-WebRequest -Uri $createADPDCPS -OutFile "$home/DSC/$createADPDCPSFileName"
 
 #Storage Group RG
 New-AzResourceGroup -Name $resourceGroupName -Location $location
