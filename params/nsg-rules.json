@@ -1,0 +1,20 @@
+{
+    "securityRules": [
+        {
+            "name": "allow-RDP-inbound",
+            "properties": {
+                "description": "Allow inbound RDP traffic",
+                "protocol": "Tcp",
+                "sourcePortRange": "*",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "RDP",
+                "access": "Allow",
+                "priority": 110,
+                "direction": "inbound",
+                "destinationPortRanges": [
+                    "3389"
+                ]
+            }
+        }
+    ]
+}
