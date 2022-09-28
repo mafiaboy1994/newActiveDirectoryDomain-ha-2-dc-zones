@@ -248,11 +248,11 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "configuration": {
-            "url": "[uri(parameters('_artifactsLocation'), 'DSC/CreateADPDC.ps1.zip')]",
+            "url": "[uri(parameters('_artifactsLocation'), 'CreateADPDC.ps1.zip')]",
             "script": "CreateADPDC.ps1",
             "function": "CreateADPDC"
           },
-          "modulesUrl":"[uri(parameters('_artifactsLocation'), 'DSC/CreateADPDC.ps1.zip')]" ,
+          "modulesUrl":"[uri(parameters('_artifactsLocation'), 'CreateADPDC.ps1.zip')]" ,
           "configurationFunction": "CreateADPDC",
           "configurationArguments": {
             "domainName": "[parameters('domainName')]"
@@ -284,11 +284,11 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "configuration": {
-            "url": "[uri(parameters('_artifactsLocation'), 'DSC/PrepareADBDC.ps1.zip')]",
+            "url": "[uri(parameters('_artifactsLocation'), 'PrepareADBDC.ps1.zip')]",
             "script": "PrepareADBDC.ps1",
             "function": "PrepareADBDC"
           },
-          "modulesUrl" : "[uri(parameters('_artifactsLocation'), 'DSC/PrepareADBDC.ps1.zip')]",
+          "modulesUrl" : "[uri(parameters('_artifactsLocation'), 'PrepareADBDC.ps1.zip')]",
           "configurationFunction" : "PrepareADBDC",
           "configurationArguments": {
             "DNSServer": "[variables('iPAddress')[0]]"

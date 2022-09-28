@@ -4,14 +4,17 @@ $location = Read-Host -Prompt "Enter a location, i.e. (centralus)"
 $companyName = Read-Host -Prompt "Enter Company Name"
 $env = Read-Host -Prompt "Enter environment"
 
-$resourceGroupName = "rg-" + $projectName
+$resourceGroupName = "rg-" + $projectName + $companyName + $env + $location
 $storageAccountName = "st" + $projectName + $companyName + $env + $location
 $containerName = "templates"
 
 $mainTemplateURL = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/azuredeploy.json"
-$configureADBDC = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/configureADBDC.json"
-$configureNIC = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/nic.json"
-$configureVNET = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/vnet.json"
+$configureADBDC = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/nestedtemplates/configureADBDC.json"
+$configureNIC = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/nestedtemplates/nic.json"
+$configureVNET = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/nestedtemplates/vnet.json"
+
+
+
 
 $mainFileName = "azuredeploy.json" # File name used for downloading and uploading the main template.Add-PSSnapin
 $ADBDCFileName = "configureADBDC.json"
@@ -49,19 +52,19 @@ Set-AzStorageBlobContent `
 Set-AzStorageBlobContent `
 -Container $containerName `
 -File "$home/$ADBDCFileName" `
--Blob $ADBDCFileName `
+-Blob "nestedtemplates/${ADBDCFileName}"
 -Context $context
 
 Set-AzStorageBlobContent `
 -Container $containerName `
 -File "$home/$NICFileName" `
--Blob $NICFileName `
+-Blob "nestedtemplates/${$NICFileName}" `
 -Context $context
 
 Set-AzStorageBlobContent `
 -Container $containerName `
 -File "$home/$VNETFileName" `
--Blob $VNETFileName `
+-Blob "nestedtemplates/${VNETFileName}" `
 -Context $context
 
 Write-Host "Press [ENTER] to continue....."
@@ -78,11 +81,12 @@ $sasToken = New-AzStorageContainerSASToken `
 
 $newSas = $sasToken.substring(1)
 
-New-AzSubscriptionDeployment `
--Name DeployMassTemplate `
+New-AzResourceGroupDeployment `
+-Name DeployMainTemplate `
+-ResourceGroupName $resourceGroupName `
 -TemplateUri $mainTemplateUri `
 -QueryString $newSas `
 -Verbose
 
-Write-Host "Press [ENTER] to continue....."
+
 
