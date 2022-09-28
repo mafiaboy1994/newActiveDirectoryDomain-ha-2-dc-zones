@@ -285,7 +285,7 @@
         "settings": {
           "configuration": {
             "url": "[uri(parameters('_artifactsLocation'), 'DSC/PrepareADBDC.ps1.zip')]",
-            "script": "PrepareADBDC.ps1",
+            "script": "PrepareADBDC.ps1"
             //"function": "PrepareADBDC"
           },
           "modulesUrl" : "[uri(parameters('_artifactsLocation'), 'DSC/PrepareADBDC.ps1.zip')]",
