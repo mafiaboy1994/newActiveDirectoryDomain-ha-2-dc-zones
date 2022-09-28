@@ -23,7 +23,7 @@ $VNETFileName = "vnet.json"
 
 #Download templates
 mkdir $home/nestedtemplates
-Invoke-WebRequest -Uri $mainTemplateURL -OutFile "$home/nestedtemplates/$mainFileName"
+Invoke-WebRequest -Uri $mainTemplateURL -OutFile "$home/$mainFileName"
 Invoke-WebRequest -Uri $configureADBDC -OutFile "$home/nestedtemplates/$ADBDCFileName"
 Invoke-WebRequest -Uri $configureNIC -OutFile "$home/nestedtemplates/$NICFileName"
 Invoke-WebRequest -Uri $configureVNET -OutFile "$home/nestedtemplates/$VNETFileName"
