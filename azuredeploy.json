@@ -34,7 +34,7 @@
     },
     "domainName": {
       "type": "string",
-      //"defaultValue": "ebws.local",
+      "defaultValue": "ebws.local",
       "metadata": {
         "description": "The FQDN of the AD Domain created "
       }
