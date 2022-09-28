@@ -94,7 +94,7 @@
     ],
     "ipAddress": [
       "10.0.0.10",
-      "10.0.0."
+      "10.0.0.11"
     ],
     "configureADBDCTemplateUri": "[uri(parameters('_artifactsLocation'), concat('nestedtemplates/configureADBDC.json', parameters('_artifactsLocationSasToken')))]",
     "adBDCConfigurationModulesURL": "[uri(parameters('_artifactsLocation'), 'DSC/ConfigureADBDC.ps1.zip')]",

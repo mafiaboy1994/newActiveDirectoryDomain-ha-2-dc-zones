@@ -22,10 +22,11 @@ $NICFileName = "nic.json"
 $VNETFileName = "vnet.json"
 
 #Download templates
-Invoke-WebRequest -Uri $mainTemplateURL -OutFile "$home/$mainFileName"
-Invoke-WebRequest -Uri $configureADBDC -OutFile "$home/$ADBDCFileName"
-Invoke-WebRequest -Uri $configureNIC -OutFile "$home/$NICFileName"
-Invoke-WebRequest -Uri $configureVNET -OutFile "$home/$VNETFileName"
+mkdir $home/nestedtemplates
+Invoke-WebRequest -Uri $mainTemplateURL -OutFile "$home/nestedtemplates/$mainFileName"
+Invoke-WebRequest -Uri $configureADBDC -OutFile "$home/nestedtemplates/$ADBDCFileName"
+Invoke-WebRequest -Uri $configureNIC -OutFile "$home/nestedtemplates/$NICFileName"
+Invoke-WebRequest -Uri $configureVNET -OutFile "$home/nestedtemplates/$VNETFileName"
 
 #Storage Group RG
 New-AzResourceGroup -Name $resourceGroupName -Location $location
@@ -37,8 +38,9 @@ $storageAccount = New-AzStorageAccount `
 -Location $location `
 -SkuName "Standard_GRS"
 
-$context = $storageAccount.Context
-
+$key = (Get-AzStorageAccountKey -ResourceGroupName $resourceGroupName -Name $storageAccountName).Value[0]
+#$context = $storageAccount.Context
+$context = New-AzStorageContext -StorageAccountName $storageAccountName -StorageAccountKey $key
 #Create a container
 New-AzStorageContainer -Name $containerName -Context $context -Permission Container
 
@@ -51,26 +53,25 @@ Set-AzStorageBlobContent `
 
 Set-AzStorageBlobContent `
 -Container $containerName `
--File "$home/$ADBDCFileName" `
--Blob "nestedtemplates/${ADBDCFileName}"
+-File "$home/nestedtemplates/$ADBDCFileName" `
+-Blob "nestedtemplates/${ADBDCFileName}" `
 -Context $context
 
 Set-AzStorageBlobContent `
 -Container $containerName `
--File "$home/$NICFileName" `
--Blob "nestedtemplates/${$NICFileName}" `
+-File "$home/nestedtemplates/$NICFileName" `
+-Blob "nestedtemplates/${NICFileName}" `
 -Context $context
 
 Set-AzStorageBlobContent `
 -Container $containerName `
--File "$home/$VNETFileName" `
+-File "$home/nestedtemplates/$VNETFileName" `
 -Blob "nestedtemplates/${VNETFileName}" `
 -Context $context
 
 Write-Host "Press [ENTER] to continue....."
 
 
-$key = (Get-AzStorageAccountKey -ResourceGroupName $resourceGroupName -Name $storageAccountName).Value[0]
 
 $mainTemplateUri = $context.BlobEndPoint + "$containerName/azuredeploy.json"
 $sasToken = New-AzStorageContainerSASToken `
