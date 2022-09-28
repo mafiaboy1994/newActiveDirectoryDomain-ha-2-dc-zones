@@ -255,7 +255,7 @@
           "modulesUrl":"[uri(parameters('_artifactsLocation'), 'DSC/CreateADPDC.ps1.zip')]" ,
           "configurationFunction": "CreateADPDC.ps1\\CreateADPDC",
           "configurationArguments": {
-            "domainName": "[parameters('domainName')]"
+            "DomainName": "[parameters('domainName')]"
           }
         },
         "protectedSettings": {
@@ -275,7 +275,8 @@
       "name": "[concat(variables('vmName')[1], '/PepareBDC')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "vmLoop"
+        "vmLoop",
+        "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('vmName')[0], 'CreateAdForest')]"
       ],
       "properties": {
         "publisher": "Microsoft.Powershell",
