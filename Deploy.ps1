@@ -23,7 +23,7 @@ $mainFileName = "azuredeploy.json" # File name used for downloading and uploadin
 $ADBDCFileName = "configureADBDC.json"
 $NICFileName = "nic.json"
 $VNETFileName = "vnet.json"
-$prepareADBDCZipFileName = "PrepareADBDC.zip"
+$prepareADBDCZipFileName = "PrepareADBDC.ps1.zip"
 $prepareADBDCPSFileName = "PrepareADBDC.ps1"
 $createADPDCZipFileName = "CreateADPDC.ps1.zip"
 $createADPDCPSFileName = "CreateADPDC.ps1"
@@ -82,30 +82,6 @@ Set-AzStorageBlobContent `
 -Blob "nestedtemplates/${VNETFileName}" `
 -Context $context
 
-Set-AzStorageBlobContent `
--Container $containerName `
--File "$home/DSC/$prepareADBDCZipFileName" `
--Blob "DSC/${prepareADBDCZipFileName}" `
--Context $context
-
-
-Set-AzStorageBlobContent `
--Container $containerName `
--File "$home/DSC/$prepareADBDCPSFileName" `
--Blob "DSC/${prepareADBDCPSFileName}" `
--Context $context
-
-Set-AzStorageBlobContent `
--Container $containerName `
--File "$home/DSC/$createADPDCZipFileName" `
--Blob "DSC/${createADPDCZipFileName}" `
--Context $context
-
-Set-AzStorageBlobContent `
--Container $containerName `
--File "$home/DSC/$createADPDCPSFileName" `
--Blob "DSC/${createADPDCPSFileName}" `
--Context $context
 
 
 

@@ -34,7 +34,7 @@
     },
     "domainName": {
       "type": "string",
-      "defaultValue": "contoso.local",
+      //"defaultValue": "ebws.local",
       "metadata": {
         "description": "The FQDN of the AD Domain created "
       }
@@ -272,7 +272,7 @@
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "apiVersion": "2020-12-01",
-      "name": "[concat(variables('vmName')[1], '/PepareBDC')]",
+      "name": "[concat(variables('vmName')[1], '/PrepareBDC')]",
       "location": "[parameters('location')]",
       "dependsOn": [
         "vmLoop"
