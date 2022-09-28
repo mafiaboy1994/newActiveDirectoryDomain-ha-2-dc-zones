@@ -12,7 +12,10 @@ $mainTemplateURL = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDire
 $configureADBDC = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/nestedtemplates/configureADBDC.json"
 $configureNIC = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/nestedtemplates/nic.json"
 $configureVNET = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/nestedtemplates/vnet.json"
-
+$prepareADBDCZip = ""
+$prepareADBDCPS = ""
+$createADPDCZip = ""
+$createADPDCPS = ""
 
 
 
