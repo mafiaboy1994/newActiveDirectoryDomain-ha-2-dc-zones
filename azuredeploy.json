@@ -305,7 +305,7 @@
       "name": "UpdateVNetDNS1",
       "dependsOn": [
         "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('vmName')[0], 'CreateAdForest')]",
-        "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('vmName')[1], 'PepareBDC')]"
+        "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('vmName')[1], 'PrepareBDC')]"
       ],
       "properties": {
         "mode": "Incremental",
