@@ -264,6 +264,7 @@
         }
       }
     },
+    /*
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "apiVersion": "2020-12-01",
@@ -299,7 +300,8 @@
           }
         }
       }
-    },
+    },*/
+    /*
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "apiVersion": "2020-12-01",
@@ -333,6 +335,7 @@
         }
       }
     },
+    */
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
