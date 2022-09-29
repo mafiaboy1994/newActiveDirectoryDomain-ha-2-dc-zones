@@ -71,13 +71,13 @@
     "imagePublisher": "MicrosoftWindowsServer",
     "imageOffer": "WindowsServer",
     "imageSKU": "2019-Datacenter",
-    "virtualNetworkName": "vnet-AAD",
+    "virtualNetworkName": "vnet-AAD-ebws-uksouth",
     "virtualNetworkAddressRange": "10.0.0.0/24",
     "adSubnetName": "production",
     "adSubnet": "10.0.0.0/24",
     "adSubnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('adSubnetName'))]",
     "publicIPSKU": "Standard",
-    "publicIPAddressName": "adPublicIp",
+    "publicIPAddressName": "aadPublicIP",
     "publicIPAddressType": "Static",
     "publicIpAddressId": {
       "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]"
@@ -87,12 +87,12 @@
     "nicTemplateUri": "[uri(parameters('_artifactsLocation'), concat('nestedtemplates/nic.json', parameters('_artifactsLocationSasToken')))]",
     "jsonTemplateUri": "[uri(parameters('_artifactsLocation'),concat('params/nsg-rules.json'))]",
     "vmName": [
-      "adPDC",
-      "adBDC"
+      "vm-aadDC01",
+      "vm-aadDC02"
     ],
     "nicName": [
-      "adPDCNic",
-      "adBDCNic"
+      "nic-aadDC01",
+      "nic-aadDC02"
     ],
     "ipAddress": [
       "10.0.0.10",
