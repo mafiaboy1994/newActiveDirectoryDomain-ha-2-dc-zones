@@ -136,7 +136,7 @@
                 "protocol": "Tcp",
                 "sourcePortRange": "*",
                 "sourceAddressPrefix": "*",
-                "destinationAddressPrefix": "RDP",
+                "destinationAddressPrefix": "VirtualNetwork",
                 "access": "Allow",
                 "priority": 110,
                 "direction": "inbound",
