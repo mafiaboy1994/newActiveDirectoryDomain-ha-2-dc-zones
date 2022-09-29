@@ -275,8 +275,8 @@
       "name": "[concat(variables('vmName')[1], '/PepareBDC')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "vmLoop",
-        "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('vmName')[0], 'CreateAdForest')]"
+        "vmLoop"
+        //"[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('vmName')[0], 'CreateAdForest')]"
       ],
       "properties": {
         "publisher": "Microsoft.Powershell",
