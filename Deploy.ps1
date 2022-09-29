@@ -19,7 +19,7 @@ $prepareADBDCZip = "https://github.com/mafiaboy1994/newActiveDirectoryDomain-ha-
 $prepareADBDCPS = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/DSC/PrepareADBDC.ps1"
 $createADPDCZip = "https://github.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/raw/main/DSC/CreateADPDC.ps1.zip"
 $createADPDCPS = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/DSC/CreateADPDC.ps1"
-
+$nsgparams = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/params/nsg-rules.json"
 
 
 $mainFileName = "azuredeploy.json" # File name used for downloading and uploading the main template.Add-PSSnapin
@@ -33,10 +33,12 @@ $prepareADBDCZipFileName = "PrepareADBDC.ps1.zip"
 $prepareADBDCPSFileName = "PrepareADBDC.ps1"
 $createADPDCZipFileName = "CreateADPDC.ps1.zip"
 $createADPDCPSFileName = "CreateADPDC.ps1"
+$nsgparamsFileName = "nsg-rules.json"
 
 #Download templates
 mkdir $home/nestedtemplates
 mkdir $home/DSC
+mkdir $home/params
 Invoke-WebRequest -Uri $mainTemplateURL -OutFile "$home/$mainFileName"
 Invoke-WebRequest -Uri $mainTemplateParamsURL -OutFile "$home/$mainParamsFileName"
 Invoke-WebRequest -Uri $configureADBDC -OutFile "$home/nestedtemplates/$ADBDCFileName"
@@ -48,6 +50,7 @@ Invoke-WebRequest -Uri $prepareADBDCZip -OutFile "$home/DSC/$prepareADBDCZipFile
 Invoke-WebRequest -Uri $prepareADBDCPS -OutFile "$home/DSC/$prepareADBDCPSFileName"
 Invoke-WebRequest -Uri $createADPDCZip -OutFile "$home/DSC/$createADPDCZipFileName"
 Invoke-WebRequest -Uri $createADPDCPS -OutFile "$home/DSC/$createADPDCPSFileName"
+Invoke-WebRequest -Uri $nsgparams -OutFile "$home/params/$nsgparamsFileName"
 
 #Storage Group RG
 New-AzResourceGroup -Name $resourceGroupName -Location $location
@@ -135,7 +138,11 @@ Set-AzStorageBlobContent `
 -Blob "DSC/${createADPDCPSFileName}" `
 -Context $context -Force
 
-
+Set-AzStorageBlobContent `
+-Container $containerName `
+-File "$home/params/$nsgparamsFileName" `
+-Blob "params/${nsgparamsFileName}" `
+-Context $context -Force
 
 
 

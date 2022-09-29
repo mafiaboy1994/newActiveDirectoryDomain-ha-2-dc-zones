@@ -85,6 +85,7 @@
     "networkSecurityGroupName": "[format('{0}-nsg', variables('adSubnetName'))]",
     "vnetTemplateUri": "[uri(parameters('_artifactsLocation'), concat('nestedtemplates/vnet.json', parameters('_artifactsLocationSasToken')))]",
     "nicTemplateUri": "[uri(parameters('_artifactsLocation'), concat('nestedtemplates/nic.json', parameters('_artifactsLocationSasToken')))]",
+    "jsonTemplateUri": "[uri(parameters('_artifactsLocation'),concat('params/nsg-rules.json'))]",
     "vmName": [
       "adPDC",
       "adBDC"
@@ -126,7 +127,11 @@
       "apiVersion": "2020-11-01",
       "name": "[variables('networkSecurityGroupName')]",
       "location": "[parameters('location')]",
-      "properties": {}
+      "properties": {
+        "securityRules": {
+          "uri": "[variables('jsonTemplateUri')]"
+        }
+      }
     },
     {
       "type": "Microsoft.Resources/deployments",
