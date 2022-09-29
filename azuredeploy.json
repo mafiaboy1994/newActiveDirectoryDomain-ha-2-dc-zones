@@ -294,7 +294,7 @@
           "modulesUrl" : "[uri(parameters('_artifactsLocation'), 'DSC/PrepareADBDC.ps1.zip')]",
           "configurationFunction" : "PrepareADBDC.ps1\\PrepareADBDC",
           "configurationArguments": {
-            "DNSServer": "[variables('iPAddress')[0]]",
+            "DNSServer": "[variables('iPAddress')[0]]"
           }
         },
         "protectedSettings": {
