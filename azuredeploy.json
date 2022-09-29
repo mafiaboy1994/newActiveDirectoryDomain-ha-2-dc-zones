@@ -250,7 +250,7 @@
           "configuration": {
             "url": "[uri(parameters('_artifactsLocation'), 'DSC/CreateADPDC.ps1.zip')]",
             "script": "CreateADPDC.ps1",
-            "function": "CreateADPDC"
+            "function": "CreateADPDC.ps1\\CreateADPDC"
           },
           "modulesUrl":"[uri(parameters('_artifactsLocation'), 'DSC/CreateADPDC.ps1.zip')]" ,
           "configurationFunction": "CreateADPDC.ps1\\CreateADPDC",
@@ -269,7 +269,6 @@
         }
       }
     },
-    /*
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "apiVersion": "2020-12-01",
@@ -285,15 +284,17 @@
         "typeHandlerVersion": "2.24",
         "autoUpgradeMinorVersion": true,
         "settings": {
+          
           "configuration": {
             "url": "[uri(parameters('_artifactsLocation'), 'DSC/PrepareADBDC.ps1.zip')]",
-            "script": "PrepareADBDC.ps1"
-            //"function": "PrepareADBDC"
+            "script": "PrepareADBDC.ps1",
+            "function": "PrepareADBDC"
           },
+  
           "modulesUrl" : "[uri(parameters('_artifactsLocation'), 'DSC/PrepareADBDC.ps1.zip')]",
           "configurationFunction" : "PrepareADBDC.ps1\\PrepareADBDC",
           "configurationArguments": {
-            "DNSServer": "[variables('iPAddress')[0]]"
+            "DNSServer": "[variables('iPAddress')[0]]",
           }
         },
         "protectedSettings": {
@@ -301,16 +302,14 @@
         }
       }
     },
-    */
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "UpdateVNetDNS1",
-      /*"dependsOn": [
+      "dependsOn": [
         "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('vmName')[0], 'CreateAdForest')]",
         "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('vmName')[1], 'PepareBDC')]"
       ],
-      */
       "properties": {
         "mode": "Incremental",
         "templateLink": {

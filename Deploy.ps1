@@ -11,6 +11,8 @@ $containerName = "templates"
 $mainTemplateURL = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/azuredeploy.json"
 $mainTemplateParamsURL = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/azuredeploy.parameters.json"
 $configureADBDC = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/nestedtemplates/configureADBDC.json"
+$configureADBDCPS = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/DSC/ConfigureADBDC.ps1"
+$configureADBDCZip = "https://github.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/raw/main/DSC/ConfigureADBDC.ps1.zip"
 $configureNIC = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/nestedtemplates/nic.json"
 $configureVNET = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/nestedtemplates/vnet.json"
 $prepareADBDCZip = "https://github.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/raw/main/DSC/PrepareADBDC.ps1.zip"
@@ -23,6 +25,8 @@ $createADPDCPS = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirect
 $mainFileName = "azuredeploy.json" # File name used for downloading and uploading the main template.Add-PSSnapin
 $mainParamsFileName = ".\azuredeploy.parameters.json"
 $ADBDCFileName = "configureADBDC.json"
+$configureADBDCPSFileName = "ConfigureADBDC.ps1"
+$configureADBDCZipFileName = "ConfigureADBDC.ps1.zip"
 $NICFileName = "nic.json"
 $VNETFileName = "vnet.json"
 $prepareADBDCZipFileName = "PrepareADBDC.ps1.zip"
@@ -36,9 +40,10 @@ mkdir $home/DSC
 Invoke-WebRequest -Uri $mainTemplateURL -OutFile "$home/$mainFileName"
 Invoke-WebRequest -Uri $mainTemplateParamsURL -OutFile "$home/$mainParamsFileName"
 Invoke-WebRequest -Uri $configureADBDC -OutFile "$home/nestedtemplates/$ADBDCFileName"
+Invoke-WebRequest -Uri $configureADBDCPS -OutFile "$home/DSC/$configureADBDCPSFileName"
+Invoke-WebRequest -Uri $configureADBDCZip -OutFile "$home/DSC/$configureADBDCZipFileName"
 Invoke-WebRequest -Uri $configureNIC -OutFile "$home/nestedtemplates/$NICFileName"
 Invoke-WebRequest -Uri $configureVNET -OutFile "$home/nestedtemplates/$VNETFileName"
-
 Invoke-WebRequest -Uri $prepareADBDCZip -OutFile "$home/DSC/$prepareADBDCZipFileName"
 Invoke-WebRequest -Uri $prepareADBDCPS -OutFile "$home/DSC/$prepareADBDCPSFileName"
 Invoke-WebRequest -Uri $createADPDCZip -OutFile "$home/DSC/$createADPDCZipFileName"
@@ -73,9 +78,7 @@ Set-AzStorageBlobContent `
 -Blob $mainParamsFileName `
 -Context $context
 
-
-
-
+# Nested Templates Upload
 Set-AzStorageBlobContent `
 -Container $containerName `
 -File "$home/nestedtemplates/$ADBDCFileName" `
@@ -93,6 +96,47 @@ Set-AzStorageBlobContent `
 -File "$home/nestedtemplates/$VNETFileName" `
 -Blob "nestedtemplates/${VNETFileName}" `
 -Context $context
+
+# DSC Templates Upload
+
+Set-AzStorageBlobContent `
+-Container $containerName `
+-File "$home/DSC/$configureADBDCPSFileName" `
+-Blob "DSC/${configureADBDCPSFileName}" `
+-Context $context
+
+Set-AzStorageBlobContent `
+-Container $containerName `
+-File "$home/DSC/$configureADBDCZipFileName" `
+-Blob "DSC/${configureADBDCZipFileName}" `
+-Context $context
+
+Set-AzStorageBlobContent `
+-Container $containerName `
+-File "$home/DSC/$prepareADBDCZipFileName" `
+-Blob "DSC/${prepareADBDCZipFileName}" `
+-Context $context
+
+Set-AzStorageBlobContent `
+-Container $containerName `
+-File "$home/DSC/$prepareADBDCPSFileName" `
+-Blob "DSC/${prepareADBDCPSFileName}" `
+-Context $context
+
+Set-AzStorageBlobContent `
+-Container $containerName `
+-File "$home/DSC/$createADPDCZipFileName" `
+-Blob "DSC/${createADPDCZipFileName}" `
+-Context $context
+
+Set-AzStorageBlobContent `
+-Container $containerName `
+-File "$home/DSC/$createADPDCPSFileName" `
+-Blob "DSC/${createADPDCPSFileName}" `
+-Context $context
+
+
+
 
 
 
@@ -116,7 +160,6 @@ New-AzResourceGroupDeployment `
 -TemplateUri $mainTemplateUri `
 -TemplateParameterUri $mainTemplateParamsUri `
 -QueryString $newSas `
--Verbose `
--de
+-Verbose 
 
 
