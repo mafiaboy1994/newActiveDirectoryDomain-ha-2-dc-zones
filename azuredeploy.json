@@ -128,9 +128,11 @@
       "name": "[variables('networkSecurityGroupName')]",
       "location": "[parameters('location')]",
       "properties": {
-        "securityRules": {
-          "uri": "[variables('jsonTemplateUri')]"
-        }
+        "securityRules": [
+          {
+            "uri": "[variables('jsonTemplateUri')]"
+          }
+        ]
       }
     },
     {
