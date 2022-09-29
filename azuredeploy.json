@@ -82,6 +82,7 @@
     "publicIpAddressId": {
       "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]"
     },
+    "networkSecurityGroupName": "[format('{0}-nsg', variables('adSubnetName'))]",
     "vnetTemplateUri": "[uri(parameters('_artifactsLocation'), concat('nestedtemplates/vnet.json', parameters('_artifactsLocationSasToken')))]",
     "nicTemplateUri": "[uri(parameters('_artifactsLocation'), concat('nestedtemplates/nic.json', parameters('_artifactsLocationSasToken')))]",
     "vmName": [
@@ -121,6 +122,13 @@
       }
     },
     {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2020-11-01",
+      "name": "[variables('networkSecurityGroupName')]",
+      "location": "[parameters('location')]",
+      "properties": {}
+    },
+    {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "CreateVNet",
@@ -145,6 +153,9 @@
           },
           "location": {
             "value": "[parameters('location')]"
+          },
+          "networkSecurityGroupName": {
+            "value": "[variables('networkSecurityGroupName')]"
           }
         }
       }
@@ -334,6 +345,9 @@
               "[variables('ipAddress')[0]]"
             ]
           },
+          "networkSecurityGroupName": {
+            "value": "[variables('networkSecurityGroupName')]"
+          },
           "location": {
             "value": "[parameters('location')]"
           }
@@ -457,6 +471,9 @@
           },
           "location": {
             "value": "[parameters('location')]"
+          },
+          "networkSecurityGroupName": {
+            "value": "[variables('networkSecurityGroupName')]"
           }
         }
       }

@@ -70,32 +70,32 @@ Set-AzStorageBlobContent `
 -Container $containerName `
 -File "$home/$mainFileName" `
 -Blob $mainFileName `
--Context $context
+-Context $context -Force
 
 Set-AzStorageBlobContent `
 -Container $containerName `
 -File "$home/$mainParamsFileName" `
 -Blob $mainParamsFileName `
--Context $context
+-Context $context -Force
 
 # Nested Templates Upload
 Set-AzStorageBlobContent `
 -Container $containerName `
 -File "$home/nestedtemplates/$ADBDCFileName" `
 -Blob "nestedtemplates/${ADBDCFileName}" `
--Context $context
+-Context $context -Force
 
 Set-AzStorageBlobContent `
 -Container $containerName `
 -File "$home/nestedtemplates/$NICFileName" `
 -Blob "nestedtemplates/${NICFileName}" `
--Context $context
+-Context $context -Force
 
 Set-AzStorageBlobContent `
 -Container $containerName `
 -File "$home/nestedtemplates/$VNETFileName" `
 -Blob "nestedtemplates/${VNETFileName}" `
--Context $context
+-Context $context -Force
 
 # DSC Templates Upload
 
@@ -103,37 +103,37 @@ Set-AzStorageBlobContent `
 -Container $containerName `
 -File "$home/DSC/$configureADBDCPSFileName" `
 -Blob "DSC/${configureADBDCPSFileName}" `
--Context $context
+-Context $context -Force
 
 Set-AzStorageBlobContent `
 -Container $containerName `
 -File "$home/DSC/$configureADBDCZipFileName" `
 -Blob "DSC/${configureADBDCZipFileName}" `
--Context $context
+-Context $context -Force
 
 Set-AzStorageBlobContent `
 -Container $containerName `
 -File "$home/DSC/$prepareADBDCZipFileName" `
 -Blob "DSC/${prepareADBDCZipFileName}" `
--Context $context
+-Context $context -Force
 
 Set-AzStorageBlobContent `
 -Container $containerName `
 -File "$home/DSC/$prepareADBDCPSFileName" `
 -Blob "DSC/${prepareADBDCPSFileName}" `
--Context $context
+-Context $context -Force
 
 Set-AzStorageBlobContent `
 -Container $containerName `
 -File "$home/DSC/$createADPDCZipFileName" `
 -Blob "DSC/${createADPDCZipFileName}" `
--Context $context
+-Context $context -Force
 
 Set-AzStorageBlobContent `
 -Container $containerName `
 -File "$home/DSC/$createADPDCPSFileName" `
 -Blob "DSC/${createADPDCPSFileName}" `
--Context $context
+-Context $context -Force
 
 
 

@@ -8,6 +8,12 @@
         "Description": "The name of the Virtual Network to Create"
       }
     },
+    "networkSecurityGroupname": {
+      "type": "string",
+      "metadata": {
+        "Description": "The Name of the network security group to create"
+      }
+    },
     "virtualNetworkAddressRange": {
       "type": "string",
       "metadata": {
@@ -62,7 +68,8 @@
           {
             "name": "[parameters('subnetName')]",
             "properties": {
-              "addressPrefix": "[parameters('subnetRange')]"
+              "addressPrefix": "[parameters('subnetRange')]",
+              "networkSecurityGroup": "[parameters('NetworkSecurityGroupName')]"
             }
           }
         ]
