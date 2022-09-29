@@ -69,6 +69,15 @@ Set-AzStorageBlobContent `
 
 Set-AzStorageBlobContent `
 -Container $containerName `
+-File "$home/$mainParamsFileName" `
+-Blob $mainParamsFileName `
+-Context $context
+
+
+
+
+Set-AzStorageBlobContent `
+-Container $containerName `
 -File "$home/nestedtemplates/$ADBDCFileName" `
 -Blob "nestedtemplates/${ADBDCFileName}" `
 -Context $context
@@ -87,14 +96,12 @@ Set-AzStorageBlobContent `
 
 
 
-
-
-
 Write-Host "Press [ENTER] to continue....."
 
 
 
 $mainTemplateUri = $context.BlobEndPoint + "$containerName/azuredeploy.json"
+$mainTemplateParamsUri = $contex.BlobEndPoint + "$containerName/azuredeploy.parameters.json"
 $sasToken = New-AzStorageContainerSASToken `
 -Context $context `
 -Container $containerName `
@@ -107,9 +114,9 @@ New-AzResourceGroupDeployment `
 -Name DeployMainTemplate `
 -ResourceGroupName $resourceGroupName `
 -TemplateUri $mainTemplateUri `
--TemplateParameterFile 
+-TemplateParameterUri $mainTemplateParamsUri `
 -QueryString $newSas `
--Verbose
-
+-Verbose `
+-de
 
 
