@@ -89,9 +89,9 @@
     "imagePublisher": "MicrosoftWindowsServer",
     "imageOffer": "WindowsServer",
     "imageSKU": "2022-Datacenter",
-    "virtualNetworkName": "[concat('vnet-', parameters('product'),parameters('companyName'), parameters('location'))]",    //"vnet-AAD-ebws-uksouth",
+    "virtualNetworkName": "[concat(parameters('product'),parameters('companyName'),parameters('environment'), 'uks')]",    //"vnet-AAD-ebws-uksouth",
     "virtualNetworkAddressRange": "10.0.0.0/24",
-    "adSubnetName": "[concat('snet-',parameters('product'),parameters('environment'))]", //"snet-production",
+    "adSubnetName": "[concat(parameters('product'),parameters('environment'))]", //"snet-production",
     "adSubnet": "10.0.0.0/24",
     "adSubnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('adSubnetName'))]",
     "publicIPSKU": "Standard",
@@ -100,17 +100,17 @@
     "publicIpAddressId": {
       "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]"
     },
-    "networkSecurityGroupName": "[concat('nsg-', variables('virtualNetworkName'), variables('adSubnetName'), parameters('environment'), parameters('location'))]", /*"[format('{0}-nsg', variables('adSubnetName'))]"*/
+    "networkSecurityGroupName": "[format('{0}-', variables('adSubnetName'))]", /*"[concat(variables('virtualNetworkName'),'/', variables('adSubnetName'),'-', parameters('environment'))]",*/ /*"[format('{0}-nsg', variables('adSubnetName'))]"*/
     "vnetTemplateUri": "[uri(parameters('_artifactsLocation'), concat('nestedtemplates/vnet.json', parameters('_artifactsLocationSasToken')))]",
     "nicTemplateUri": "[uri(parameters('_artifactsLocation'), concat('nestedtemplates/nic.json', parameters('_artifactsLocationSasToken')))]",
     /*"jsonTemplateUri": "[uri(parameters('_artifactsLocation'),concat('params/nsg-rules.json'))]",*/
     "vmName": [
-      "[concat('vm-DC01', parameters('companyName'), parameters('location'))]",
-      "[concat('vm-DC02', parameters('companyName'), parameters('location'))]"
+      "[concat('DC01', parameters('companyName'), 'uks')]",
+      "[concat('DC02', parameters('companyName'), 'uks')]"
     ],
     "nicName": [
-      "[concat('nic-DC01', parameters('companyName'), parameters('product'), parameters('location'))]",
-      "[concat('nic-DC02', parameters('companyName'), parameters('product'), parameters('location'))]"
+      "[concat('nic-DC01', parameters('companyName'), parameters('product'), 'uks')]",
+      "[concat('nic-DC02', parameters('companyName'), parameters('product'), 'uks')]"
       //"nic-aadDC01",
       //"nic-aadDC02"
     ],
@@ -145,7 +145,8 @@
     {
       "type": "Microsoft.Network/networkSecurityGroups",
       "apiVersion": "2020-11-01",
-      "name": "[variables('networkSecurityGroupName')]",
+      //"name": "[variables('networkSecurityGroupName')]",
+      "name": "[concat('nsg-',variables('networkSecurityGroupName'))]",
       "location": "[parameters('location')]",
       "properties": {
         "securityRules": [
@@ -180,13 +181,15 @@
         },
         "parameters": {
           "virtualNetworkName": {
-            "value": "[variables('virtualNetworkName')]"
+            //"value": "[variables('virtualNetworkName')]"
+            "value": "[concat('vnet-', variables('virtualNetworkName'))]"
           },
           "virtualNetworkAddressRange": {
             "value": "[variables('virtualNetworkAddressRange')]"
           },
           "subnetName": {
-            "value": "[variables('adSubnetName')]"
+            //"value": "[variables('adSubnetName')]"
+            "value": "[concat('snet', variables('adSubnetName'))]"
           },
           "subnetRange": {
             "value": "[variables('adSubnet')]"
