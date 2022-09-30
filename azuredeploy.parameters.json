@@ -16,6 +16,15 @@
     },
     "location": {
       "value": "uksouth"
+    },
+    "companyName": {
+        "value": "GEN-UNIQUE"
+    },
+    "product": {
+      "value": "GEN-UNIQUE"
+    },
+    "environment": {
+        "value": "GEN-UNIQUE"
     }
   }
 }
