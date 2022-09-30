@@ -8,7 +8,7 @@ configuration CreateADPDC
         [Parameter(Mandatory)]
         [System.Management.Automation.PSCredential]$Admincreds,
 
-        [Int]$RetryCount=20,
+        [Int]$RetryCount=30,
         [Int]$RetryIntervalSec=30
     )
 
@@ -58,13 +58,13 @@ configuration CreateADPDC
 
         xWaitforDisk Disk2
         {
-            DiskId =  = 2
+            DiskNumber =  = 2
             RetryIntervalSec =$RetryIntervalSec
             RetryCount = $RetryCount
         }
 
         xDisk ADDataDisk {
-            DiskId =  = 2
+            DiskNumber =  = 2
             DriveLetter = "F"
             DependsOn = "[xWaitForDisk]Disk2"
         }
