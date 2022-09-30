@@ -19,7 +19,7 @@ $prepareADBDCZip = "https://github.com/mafiaboy1994/newActiveDirectoryDomain-ha-
 $prepareADBDCPS = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/DSC/PrepareADBDC.ps1"
 $createADPDCZip = "https://github.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/raw/main/DSC/CreateADPDC.ps1.zip"
 $createADPDCPS = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/DSC/CreateADPDC.ps1"
-$nsgparams = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/params/nsg-rules.json"
+#$nsgparams = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/params/nsg-rules.json"
 
 
 $mainFileName = "azuredeploy.json" # File name used for downloading and uploading the main template.Add-PSSnapin
@@ -50,7 +50,7 @@ Invoke-WebRequest -Uri $prepareADBDCZip -OutFile "$home/DSC/$prepareADBDCZipFile
 Invoke-WebRequest -Uri $prepareADBDCPS -OutFile "$home/DSC/$prepareADBDCPSFileName"
 Invoke-WebRequest -Uri $createADPDCZip -OutFile "$home/DSC/$createADPDCZipFileName"
 Invoke-WebRequest -Uri $createADPDCPS -OutFile "$home/DSC/$createADPDCPSFileName"
-Invoke-WebRequest -Uri $nsgparams -OutFile "$home/params/$nsgparamsFileName"
+#Invoke-WebRequest -Uri $nsgparams -OutFile "$home/params/$nsgparamsFileName"
 
 #Storage Group RG
 New-AzResourceGroup -Name $resourceGroupName -Location $location
@@ -67,6 +67,8 @@ $key = (Get-AzStorageAccountKey -ResourceGroupName $resourceGroupName -Name $sto
 $context = New-AzStorageContext -StorageAccountName $storageAccountName -StorageAccountKey $key
 #Create a container
 New-AzStorageContainer -Name $containerName -Context $context -Permission Container
+
+Write-Host "Press [ENTER] to continue....."
 
 #Upload Templates
 Set-AzStorageBlobContent `
