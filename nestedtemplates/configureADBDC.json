@@ -48,8 +48,6 @@
             "function": "[parameters('adBDCConfigurationFunction')]"
             
           },
-          "modulesUrl": "[parameters('adBDCConfigurationModulesURL')]",
-          "configurationFunction": "[parameters('adBDCConfigurationFunction')]",
           "configurationArguments": {
             "domainName": "[parameters('domainName')]"
           }
