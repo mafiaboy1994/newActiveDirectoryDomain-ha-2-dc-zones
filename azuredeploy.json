@@ -105,8 +105,8 @@
     "nicTemplateUri": "[uri(parameters('_artifactsLocation'), concat('nestedtemplates/nic.json', parameters('_artifactsLocationSasToken')))]",
     /*"jsonTemplateUri": "[uri(parameters('_artifactsLocation'),concat('params/nsg-rules.json'))]",*/
     "vmName": [
-      "[concat('vm-DC01', parameters('companyName'), parameters('product'), parameters('location'))]",
-      "[concat('vm-DC02', parameters('companyName'), parameters('product'), parameters('location'))]"
+      "[concat('vm-DC01', parameters('companyName'), parameters('location'))]",
+      "[concat('vm-DC02', parameters('companyName'), parameters('location'))]"
     ],
     "nicName": [
       "[concat('nic-DC01', parameters('companyName'), parameters('product'), parameters('location'))]",
