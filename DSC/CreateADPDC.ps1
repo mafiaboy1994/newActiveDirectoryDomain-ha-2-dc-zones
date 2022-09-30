@@ -2,7 +2,7 @@ configuration CreateADPDC
 {
    param
    (
-        [Parameter]
+        [Parameter(Mandatory)]
         [String]$DomainName,
 
         [Parameter(Mandatory)]
