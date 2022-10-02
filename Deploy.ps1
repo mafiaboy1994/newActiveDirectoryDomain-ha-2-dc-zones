@@ -5,7 +5,7 @@ $companyName = Read-Host -Prompt "Enter Company Name"
 $env = Read-Host -Prompt "Enter environment"
 $product = Read-Host -Prompt "Products being used?"
 
-$resourceGroupName = "rg-" + $projectName + $companyName + $product + $env + $location
+$resourceGroupName = "rg-" + $projectName + "-" + $companyName + "-" + $product + "-" + $env + "-" + $location
 $storageAccountName = "stdeployment" + $projectName  + $env
 $containerName = "templates"
 

@@ -52,7 +52,7 @@
     },
     "domainName": {
       "type": "string",
-      "defaultValue": "contoso.local",
+      //"defaultValue": "contoso.local",
       "metadata": {
         "description": "The FQDN of the AD Domain created "
       }
@@ -107,7 +107,7 @@
     /*"jsonTemplateUri": "[uri(parameters('_artifactsLocation'),concat('params/nsg-rules.json'))]",*/
     "vmName": [
       "[concat('vm-DC1-', parameters('environment'), '-', 'uks')]",
-      "[concat('vm-DC2', parameters('environment'), '-', 'uks')]"
+      "[concat('vm-DC2-', parameters('environment'), '-', 'uks')]"
     ],
     "nicName": [
       "[concat('nic-DC1', parameters('environment'), '-', parameters('product'), '-uks')]",
