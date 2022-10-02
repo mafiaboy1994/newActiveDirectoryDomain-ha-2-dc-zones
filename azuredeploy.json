@@ -89,7 +89,7 @@
     "imagePublisher": "MicrosoftWindowsServer",
     "imageOffer": "WindowsServer",
     "imageSKU": "2022-Datacenter",
-    "virtualNetworkName": "[concat('vnet-',parameters('product'),'-',parameters('companyName'),'-',parameters('environment'), 'uks')]",    //"vnet-AAD-ebws-uksouth",
+    "virtualNetworkName": "[concat('vnet-',parameters('product'),'-',parameters('companyName'),'-',parameters('environment'),'-', 'uks')]",    //"vnet-AAD-ebws-uksouth",
     "virtualNetworkAddressRange": "10.0.0.0/24",
     "adSubnetName": "[concat('snet-',parameters('product'),'-',parameters('environment'))]", //"snet-production",
     "adSubnet": "10.0.0.0/24",
@@ -203,7 +203,7 @@
             "value": "[parameters('location')]"
           },
           "networkSecurityGroupName": {
-            "value": "[concat('nsg-',variables('networkSecurityGroupName'))]"
+            "value": "[concat(variables('networkSecurityGroupName'))]"
           }
         }
       }
@@ -390,7 +390,7 @@
             ]
           },
           "networkSecurityGroupName": {
-            "value": "[concat('nsg-',variables('networkSecurityGroupName'))]"
+            "value": "[concat(variables('networkSecurityGroupName'))]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -517,7 +517,7 @@
             "value": "[parameters('location')]"
           },
           "networkSecurityGroupName": {
-            "value": "[concat('nsg-',variables('networkSecurityGroupName'))]"
+            "value": "[concat(variables('networkSecurityGroupName'))]"
           }
         }
       }
