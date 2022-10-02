@@ -5,6 +5,12 @@ $companyName = Read-Host -Prompt "Enter Company Name"
 $env = Read-Host -Prompt "Enter environment"
 $product = Read-Host -Prompt "Products being used?"
 
+$folderPaths = (
+    "${home}/nestedTemplates",
+    "${home}/DSC",
+    "${home}/params"
+)
+
 $resourceGroupName = "rg-" + $projectName + "-" + $companyName + "-" + $product + "-" + $env + "-" + $location
 $storageAccountName = "stdeployment" + $projectName  + $env
 $containerName = "templates"
@@ -36,10 +42,17 @@ $createADPDCZipFileName = "CreateADPDC.ps1.zip"
 $createADPDCPSFileName = "CreateADPDC.ps1"
 $nsgparamsFileName = "nsg-rules.json"
 
+
+# Creating required folders if not already setup in $home
+foreach($paths in $folderPaths){
+    if(Test-Path -Path $paths){
+    }
+    else{
+        mkdir $paths > $null
+    }
+}
+
 #Download templates
-mkdir $home/nestedtemplates
-mkdir $home/DSC
-mkdir $home/params
 Invoke-WebRequest -Uri $mainTemplateURL -OutFile "$home/$mainFileName"
 Invoke-WebRequest -Uri $mainTemplateParamsURL -OutFile "$home/$mainParamsFileName"
 Invoke-WebRequest -Uri $configureADBDC -OutFile "$home/nestedtemplates/$ADBDCFileName"
