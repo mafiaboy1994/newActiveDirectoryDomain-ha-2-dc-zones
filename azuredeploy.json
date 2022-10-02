@@ -111,8 +111,8 @@
       "[concat('vm-DC2-', parameters('environment'), '-', 'uks')]"
     ],
     "nicName": [
-      "[concat('nic-DC1', parameters('environment'), '-', parameters('product'), '-uks')]",
-      "[concat('nic-DC2', parameters('environment'), '-', parameters('product'), '-uks')]"
+      "[concat('nic-DC1-', parameters('environment'), '-', parameters('product'), '-uks')]",
+      "[concat('nic-DC2-', parameters('environment'), '-', parameters('product'), '-uks')]"
       //"nic-aadDC01",
       //"nic-aadDC02"
     ],
