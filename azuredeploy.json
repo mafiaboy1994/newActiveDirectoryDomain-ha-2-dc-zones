@@ -100,13 +100,14 @@
     "publicIpAddressId": {
       "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]"
     },
-    "networkSecurityGroupName": "[format(variables('adSubnetName'))]", /*"[concat(variables('virtualNetworkName'),'/', variables('adSubnetName'),'-', parameters('environment'))]",*/ /*"[format('{0}-nsg', variables('adSubnetName'))]"*/
+    //"networkSecurityGroupName": "[format(variables('adSubnetName'))]", /*"[concat(variables('virtualNetworkName'),'/', variables('adSubnetName'),'-', parameters('environment'))]",*/ /*"[format('{0}-nsg', variables('adSubnetName'))]"*/
+    "networkSecurityGroupName": "[format('{0}, {1}','nsg-', variables('adSubnetName'))]",
     "vnetTemplateUri": "[uri(parameters('_artifactsLocation'), concat('nestedtemplates/vnet.json', parameters('_artifactsLocationSasToken')))]",
     "nicTemplateUri": "[uri(parameters('_artifactsLocation'), concat('nestedtemplates/nic.json', parameters('_artifactsLocationSasToken')))]",
     /*"jsonTemplateUri": "[uri(parameters('_artifactsLocation'),concat('params/nsg-rules.json'))]",*/
     "vmName": [
-      "[concat('DC01', parameters('companyName'), 'uks')]",
-      "[concat('DC02', parameters('companyName'), 'uks')]"
+      "[concat('vm-DC01', parameters('companyName'), 'uks')]",
+      "[concat('vm-DC02', parameters('companyName'), 'uks')]"
     ],
     "nicName": [
       "[concat('nic-DC01', parameters('companyName'), parameters('product'), 'uks')]",
