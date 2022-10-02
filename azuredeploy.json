@@ -95,7 +95,7 @@
     "adSubnet": "10.0.0.0/24",
     "adSubnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('adSubnetName'))]",
     "publicIPSKU": "Standard",
-    "publicIPAddressName":"[concat('pip-',parameters('companyName'), parameters('product'), parameters('location'))]", //"aadPublicIP",
+    "publicIPAddressName":"[concat('pip-', parameters('product'), '-', parameters('location'))]", //"aadPublicIP",
     "publicIPAddressType": "Static",
     "publicIpAddressId": {
       "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]"
@@ -106,12 +106,12 @@
     "nicTemplateUri": "[uri(parameters('_artifactsLocation'), concat('nestedtemplates/nic.json', parameters('_artifactsLocationSasToken')))]",
     /*"jsonTemplateUri": "[uri(parameters('_artifactsLocation'),concat('params/nsg-rules.json'))]",*/
     "vmName": [
-      "[concat('vm-DC01-', parameters('companyName'), '-', 'uks')]",
-      "[concat('vm-DC02', parameters('companyName'), '-', 'uks')]"
+      "[concat('vm-DC1-', parameters('environment'), '-', 'uks')]",
+      "[concat('vm-DC2', parameters('environment'), '-', 'uks')]"
     ],
     "nicName": [
-      "[concat('nic-DC01', parameters('companyName'), parameters('product'), 'uks')]",
-      "[concat('nic-DC02', parameters('companyName'), parameters('product'), 'uks')]"
+      "[concat('nic-DC1', parameters('environment'), '-', parameters('product'), '-uks')]",
+      "[concat('nic-DC2', parameters('environment'), '-', parameters('product'), '-uks')]"
       //"nic-aadDC01",
       //"nic-aadDC02"
     ],

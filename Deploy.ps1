@@ -3,9 +3,10 @@ $projectName = Read-Host -Prompt "Enter Project Name" # Name used to generate fo
 $location = Read-Host -Prompt "Enter a location, i.e. (centralus)"
 $companyName = Read-Host -Prompt "Enter Company Name"
 $env = Read-Host -Prompt "Enter environment"
+$product = Read-Host -Prompt "Products being used?"
 
-$resourceGroupName = "rg-" + $projectName + $companyName + $env + $location
-$storageAccountName = "st" + $projectName + $companyName + $env + $location
+$resourceGroupName = "rg-" + $projectName + $companyName + $product + $env + $location
+$storageAccountName = "stdeployment" + $projectName  + $env
 $containerName = "templates"
 
 $mainTemplateURL = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/azuredeploy.json"
