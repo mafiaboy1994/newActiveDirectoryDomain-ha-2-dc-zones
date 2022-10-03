@@ -183,6 +183,9 @@ New-AzResourceGroupDeployment `
 -TemplateUri $mainTemplateUri `
 -TemplateParameterUri $mainTemplateParamsUri `
 -QueryString $newSas `
+-environment $env `
+-companyName $companyName `
+-Location $location `
 -Verbose 
 
 
