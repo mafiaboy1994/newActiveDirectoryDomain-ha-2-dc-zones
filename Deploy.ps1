@@ -186,6 +186,7 @@ New-AzResourceGroupDeployment `
 -environment $env `
 -companyName $companyName `
 -Location $location `
+-projectName $projectName `
 -Verbose 
 
 
