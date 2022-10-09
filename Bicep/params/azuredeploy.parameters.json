@@ -1,0 +1,33 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "uksouth"
+    },
+    "vnets": {
+      "value": [
+        {
+          "name": "adDomain",
+          "addressPrefix": "10.0.0.0/16",
+          "subnets": [
+            {
+              "name": "primaryServers",
+              "subnetPrefix": "10.0.0.0/24"
+            }
+          ]
+        }
+      ]
+    },
+    "vms": {
+      "value": [
+        {
+          "name": "pdc-01"
+        },
+        {
+          "name": "bdc-01"
+        }
+      ]
+    }
+  }
+}
