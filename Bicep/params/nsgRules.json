@@ -5,7 +5,7 @@
             "properties": {
             "protocol": "Tcp",
             "sourcePortRange": "*",
-            "destinationPortRange": "443",
+            "destinationPortRange": "3389",
             "sourceAddressPrefix": "78.144.206.206",
             "destinationAddressPrefix": "VirtualNetwork",
             "access": "Allow",

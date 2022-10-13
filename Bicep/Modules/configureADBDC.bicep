@@ -2,7 +2,9 @@ param extName string
 param location string
 param adminUsername string
 param projectName string
+
 param containerName string
+
 param product string
 param environment string
 param baseTime string = utcNow('u')
@@ -18,24 +20,23 @@ param domainName string
 //param _artifactsLocationSasToken string
 
 var _artifactsLocationSasToken = saExisting.listServiceSas('2022-05-01', {
-  canonicalizedResource: '/blob${saExisting.name}/${containerName}'
+  canonicalizedResource: '/blob/${saExisting.name}/${containerName}'
   signedResource: 'c'
   signedProtocol: 'https'
   signedPermission: 'r'
-  signedServices: 'b'
   signedExpiry: dateTimeAdd(baseTime, 'PT1H')
+  signedServices: 'b'
 }).serviceSasToken
 
 resource saExisting 'Microsoft.Storage/storageAccounts@2022-05-01' existing = {
-  name: 'stdeployment-${projectName}-${environment}'
+  name: 'st${projectName}${environment}'
 }
 
-
-
+/*
 resource containerExt 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-05-01' existing = {
   name: '${saExisting.name}/${containerName}'
 }
-
+*/
 
 resource ext 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' = {
   name: extName
@@ -47,7 +48,9 @@ resource ext 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' = {
     autoUpgradeMinorVersion: true
     settings: {
       Configuration: {
-        url: '${saExisting.properties.primaryEndpoints.blob}-blob${containerName}/ConfigureADBDC.ps1.zip'
+        url: '${saExisting.properties.primaryEndpoints.blob}${containerName}/DSC/ConfigureADBDC.ps1.zip'
+        script: 'ConfigureADBDC.ps1'
+        function: 'ConfigureADBDC'
       }
       configurationArguments: {
         domainName: domainName

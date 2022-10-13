@@ -12,7 +12,7 @@ $folderPaths = (
 )
 
 $resourceGroupName = "rg-" + $projectName + "-" + $companyName + "-" + $product + "-" + $env + "-" + $location
-$storageAccountName = "stdeployment" + $projectName  + $env
+$storageAccountName = "st" + $projectName.ToLower()  + $env
 $containerName = "templates"
 
 # Download Github raw files for upload to Storage Account
@@ -22,16 +22,15 @@ $containerName = "templates"
 #$createADPDCPS = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/DSC/CreateADPDC.ps1"
 #$mainTemplateURL = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/azuredeploy.json"
 #$mainTemplateParamsURL = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/azuredeploy.parameters.json"
+#$configureADBDCBicep = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/nestedtemplates/configureADBDC.json"
 
+$configureADBDCZip = "https://github.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/raw/main/Bicep/scripts/ConfigureADBDC.ps1.zip"
+$prepareADBDCZip = "https://github.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/raw/main/Bicep/scripts/PrepareADBDC.ps1.zip"
+$createADPDCZip = "https://github.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/raw/main/Bicep/scripts/CreateADPDC.ps1.zip"
 
-$configureADBDCBicep = "https://raw.githubusercontent.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/main/nestedtemplates/configureADBDC.json"
-$configureADBDCZip = "https://github.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/raw/main/DSC/ConfigureADBDC.ps1.zip"
-$prepareADBDCZip = "https://github.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/raw/main/DSC/PrepareADBDC.ps1.zip"
-$createADPDCZip = "https://github.com/mafiaboy1994/newActiveDirectoryDomain-ha-2-dc-zones/raw/main/DSC/CreateADPDC.ps1.zip"
-
-$mainFileName = "azuredeploy.json" # File name used for downloading and uploading the main template.Add-PSSnapin
-$mainParamsFileName = ".\azuredeploy.parameters.json"
-$ADBDCFileName = "configureADBDC.bicep"
+#$mainFileName = "azuredeploy.json" # File name used for downloading and uploading the main template.Add-PSSnapin
+#$mainParamsFileName = ".\azuredeploy.parameters.json"
+#$ADBDCFileName = "configureADBDC.bicep"
 #$configureADBDCPSFileName = "ConfigureADBDC.ps1"
 $configureADBDCZipFileName = "ConfigureADBDC.ps1.zip"
 $prepareADBDCZipFileName = "PrepareADBDC.ps1.zip"
@@ -58,7 +57,7 @@ foreach($paths in $folderPaths){
 #Invoke-WebRequest -Uri $configureADBDCPS -OutFile "$home/DSC/$configureADBDCPSFileName"
 #Invoke-WebRequest -Uri $prepareADBDCPS -OutFile "$home/DSC/$prepareADBDCPSFileName"
 
-Invoke-WebRequest -Uri $configureADBDCBicep -OutFile "$home/$ADBDCFileName"
+#Invoke-WebRequest -Uri $configureADBDCBicep -OutFile "$home/$ADBDCFileName"
 Invoke-WebRequest -Uri $configureADBDCZip -OutFile "$home/DSC/$configureADBDCZipFileName"
 Invoke-WebRequest -Uri $prepareADBDCZip -OutFile "$home/DSC/$prepareADBDCZipFileName"
 Invoke-WebRequest -Uri $createADPDCZip -OutFile "$home/DSC/$createADPDCZipFileName"
@@ -95,7 +94,7 @@ Set-AzStorageBlobContent `
 -File "$home/$mainParamsFileName" `
 -Blob $mainParamsFileName `
 -Context $context -Force
-#>
+
 
 # Nested Templates Upload
 Set-AzStorageBlobContent `
@@ -103,7 +102,7 @@ Set-AzStorageBlobContent `
 -File "$home/nestedtemplates/$ADBDCFileName" `
 -Blob "nestedtemplates/${ADBDCFileName}" `
 -Context $context -Force
-
+#>
 <#
 Set-AzStorageBlobContent `
 -Container $containerName `
@@ -190,8 +189,8 @@ $newSas = $sasToken.substring(1)
 New-AzResourceGroupDeployment `
 -Name DeployMainTemplate `
 -ResourceGroupName $resourceGroupName `
--TemplateParameterFile .\params\azuredeploy.parameters.json `
--TemplateFile .\azuredeploy.bicep `
+-TemplateParameterFile .\bicep\params\azuredeploy.parameters.json `
+-TemplateFile .\bicep\azuredeploy.bicep `
 -environment $env `
 -companyName $companyName `
 -Location $location `

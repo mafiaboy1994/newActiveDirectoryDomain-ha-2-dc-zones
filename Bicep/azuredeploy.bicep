@@ -45,6 +45,7 @@ param dnsPrefix string
 @description('vm array')
 param vms array
 
+param containerName string = 'templates'
 
 var imagePublisher = 'MicrosoftWindowsServer'
 var imageOffer = 'WindowsServer'
@@ -67,9 +68,8 @@ var ipAddress = [
 ]
 
 
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: 'rg-${projectName}-${product}-${companyName}-${environment}-${location}'
-  location: location
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = {
+  name: 'rg-${projectName}-${companyName}-${product}-${environment}-${location}'
 }
 
 
@@ -78,12 +78,11 @@ module CreateVNet 'Modules/vnet.bicep' = [ for (network,i) in vnets: {
   scope: resourceGroup
   params: {
     virtualNetworkName: network.name
-    virtualNetworks: network
-    virtualNetworkAddressRange: network.addressPrefix
-    subnetName: network.subnets.name
-    subnetRange: network.subnets.subnetPrefix
-    location: location
     subnets: network.subnets
+    virtualNetworkAddressRange: network.addressPrefix
+    subnetName: network.subnets[i].name
+    subnetRange: network.subnets[i].subnetPrefix
+    location: location
     companyName: companyName
     environment:environment
     product:product
@@ -91,13 +90,14 @@ module CreateVNet 'Modules/vnet.bicep' = [ for (network,i) in vnets: {
 }]
 
 
-module vmModule 'Modules/vms.bicep' = [for (machine,i) in vms: {
-  name: 'vmCreation-${machine.name}'
+module vmModule 'Modules/vms.bicep' =  {
+  name: 'vmCreation'
   scope: resourceGroup
   dependsOn: CreateVNet
   params: {
     adminPassword:adminPassword
     adminUsername:adminUsername
+    containerName: containerName
     companyName:companyName
     dnsPrefix:dnsPrefix
     environment:environment
@@ -105,8 +105,7 @@ module vmModule 'Modules/vms.bicep' = [for (machine,i) in vms: {
     location:location
     product:product
     projectName:projectName
-    subnets: CreateVNet[i].outputs.subnetsArray[i]
-    vms: machine
+    subnetsIdArray: CreateVNet[0].outputs.subnetsIdArray
     publicIPAddressNameVar: publicIPAddressNameVar
     imageOffer:imageOffer
     imagePublisher:imagePublisher
@@ -114,20 +113,22 @@ module vmModule 'Modules/vms.bicep' = [for (machine,i) in vms: {
     publicIPSKU:publicIPSKU
     domainName:domainName
     publicIPAddressType: publicIPAddressType
+    vms: vms
   }
-}]
+}
 
-module UpdateVNetDNS1 'Modules/vnet.bicep' = [for (dns,i) in vnets: {
-  name: 'UpdateVNetDNS1-${dns.name}'
+module UpdateVNetDNS1 'Modules/vnet.bicep' =  {
+  name: 'UpdateVNetDNS1'
   scope: resourceGroup
   dependsOn: [
-    vmModule[i]
+    vmModule
   ]
   params: {
-    virtualNetworkName: CreateVNet[i].outputs.vnetsArray[i].name
-    virtualNetworkAddressRange: CreateVNet[i].outputs.vnetsArray[i].addressSpace.addressPrefix
-    subnetName: CreateVNet[i].outputs.subnetsArray[i].name
-    subnetRange: CreateVNet[i].outputs.subnetsArray[i].addressPrefix
+    virtualNetworkName: 'vnets-${vnets[0].name}-${environment}-${location}'
+    virtualNetworkAddressRange: vnets[0].addressPrefix
+    subnetName: CreateVNet[0].outputs.subnetsNameArray[0].name
+    subnets: CreateVNet[0].outputs.subnets
+    subnetRange: CreateVNet[0].outputs.subnetsRangeArray[0].subnetRange
     DNSServerAddress: [
       ipAddress[0]
     ]
@@ -135,10 +136,8 @@ module UpdateVNetDNS1 'Modules/vnet.bicep' = [for (dns,i) in vnets: {
     companyName:companyName
     environment:environment
     product:product
-    subnets:dns.subnets
-    virtualNetworks:dns
   }
-}]
+}
 
 
 
@@ -146,7 +145,7 @@ module UpdateBDCNIC 'Modules/nic.bicep'  = {
   name: 'UpdateBDCNIC'
   scope: resourceGroup
   params: {
-    nicName: vmModule[1].outputs.nicArray[0].name
+    nicName: vmModule.outputs.nicNameArray[1].name
     ipConfigurations: [
       {
         name: 'ipconfig1'
@@ -154,7 +153,7 @@ module UpdateBDCNIC 'Modules/nic.bicep'  = {
           privateIPAllocationMethod: 'Static'
           privateIPAddress: ipAddress[1]
           subnet: {
-            id: CreateVNet[0].outputs.subnetsArray[0].id
+            id: CreateVNet[0].outputs.subnetsIdArray[0].id
           }
         }
       }
@@ -173,7 +172,7 @@ module ConfiguringBackupADDomainController 'Modules/configureADBDC.bicep' /*TODO
   name: 'ConfiguringBackupADDomainController'
   scope: resourceGroup
   params: {
-    extName: '${vmModule[1].outputs.vmArray[1].name}/PepareBDC'
+    extName: '${vmModule.outputs.vmNameArray[1].name}/PepareBDC'
     location: location
     adminUsername: adminUsername
     adminPassword: adminPassword
@@ -181,8 +180,7 @@ module ConfiguringBackupADDomainController 'Modules/configureADBDC.bicep' /*TODO
     product: product
     projectName: projectName
     environment: environment
-    containerName: vmModule[1].outputs.containerOutput.name
-    
+    containerName: containerName
 
   }
   dependsOn: [
@@ -199,12 +197,11 @@ module UpdateVNetDNS2  'Modules/vnet.bicep' = {
     companyName:companyName
     environment:environment
     product:product
-    subnetName: CreateVNet[0].outputs.subnetsArray[0].subnets.name
-    subnetRange: CreateVNet[0].outputs.subnetsArray[0].subnets.addressPrefix
-    subnets: CreateVNet[0].outputs.subnetsArray[0].subnets
-    virtualNetworkAddressRange: CreateVNet[0].outputs.vnetsArray[0].virtualNetworks.AddressPrefix
-    virtualNetworkName: CreateVNet[0].outputs.vnetsArray[0].virtualNetworks.Name
-    virtualNetworks: CreateVNet[0].outputs.vnetsArray[0].virtualNetworks
+    subnetName: CreateVNet[0].outputs.subnetsNameArray[0].name
+    subnetRange: CreateVNet[0].outputs.subnetsRangeArray[0].subnetRange
+    subnets: CreateVNet[0].outputs.subnets
+    virtualNetworkAddressRange: vnets[0].addressPrefix
+    virtualNetworkName: 'vnets-${vnets[0].name}-${environment}-${location}'
   }
   dependsOn: [
     ConfiguringBackupADDomainController

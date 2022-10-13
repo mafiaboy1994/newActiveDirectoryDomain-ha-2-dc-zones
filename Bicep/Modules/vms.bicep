@@ -4,9 +4,6 @@ param dnsPrefix string
 @description('Size of the VM for the controller')
 param vmSize string = 'Standard_DS2_v2'
 
-@description('vm array')
-param vms array
-
 @description('The name of the Administrator of the new VM and Domain')
 param adminUsername string
 
@@ -32,7 +29,7 @@ param location string
 @secure()
 param adminPassword string
 
-param subnets array
+param subnetsIdArray array
 
 @description('environment for deployed resources, e.g. prod, dev, test etc')
 param environment string
@@ -51,12 +48,13 @@ param imageSKU string
 param publicIPSKU string
 param publicIPAddressNameVar string
 param publicIPAddressType string
+param vms array
 
-param containerName string = 'templates'
+param containerName string
 
 @description('current date for the deployment records. Do not overwrite')
-param currentDate string = utcNow('yyyy-dd-mm')
-
+//param currentDate string = utcNow('yyyy-dd-mm')
+param currentDate string = utcNow('u')
 
 @description('The FQDN of the AD Domain created ')
 param domainName string
@@ -65,21 +63,9 @@ param domainName string
 var publicIpAddressId = {
   id: publicIPAddressName.id
 }
-var vmName_var = [
-  'vm-DC1-${environment}-uks'
-  'vm-DC2-${environment}-uks'
-]
-var nicName_var = [
-  'nic-DC1-${environment}-${product}-uks'
-  'nic-DC2-${environment}-${product}-uks'
-]
-
-var adSubnetRef = [for ref in subnets: {
-  id: ref.id
-}]
 
 var _artifactsLocationSasToken = saExisting.listServiceSas('2022-05-01', {
-  canonicalizedResource: '/blob/${saExisting.name}/blob-${containerName}'
+  canonicalizedResource: '/blob/${saExisting.name}/${containerName}'
   signedResource: 'c'
   signedProtocol: 'https'
   signedPermission: 'r'
@@ -89,15 +75,15 @@ var _artifactsLocationSasToken = saExisting.listServiceSas('2022-05-01', {
 
 
 resource saExisting 'Microsoft.Storage/storageAccounts@2022-05-01' existing = {
-  name: 'stdeployment-${projectName}-${environment}'
+  name: 'st${projectName}${environment}'
 }
 
 
-
+/*
 resource containerExt 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-05-01' existing = {
   name: '${saExisting.name}/${containerName}'
 }
-
+*/
 
 resource publicIPAddressName 'Microsoft.Network/publicIPAddresses@2020-11-01' = {
   name: publicIPAddressNameVar
@@ -116,8 +102,8 @@ resource publicIPAddressName 'Microsoft.Network/publicIPAddresses@2020-11-01' = 
   }
 }
 
-resource nicName 'Microsoft.Network/networkInterfaces@2020-11-01' = [for (vm,i) in vms: {
-  name: 'nic-${vm.name}-${environment}-${location}'
+resource nicNameResource 'Microsoft.Network/networkInterfaces@2020-11-01' = [for (nic,i) in vms:{
+  name: 'nic-${nic.name}-${environment}-${location}'
   location: location
   properties: {
     ipConfigurations: [
@@ -128,7 +114,7 @@ resource nicName 'Microsoft.Network/networkInterfaces@2020-11-01' = [for (vm,i) 
           privateIPAddress: ipAddress[i]
           publicIPAddress: ((i == 0) ? publicIpAddressId : json('null'))
           subnet: {
-            id: adSubnetRef[i].id
+            id: subnetsIdArray[0].id
           }
         }
       }
@@ -139,18 +125,18 @@ resource nicName 'Microsoft.Network/networkInterfaces@2020-11-01' = [for (vm,i) 
 }]
 
 
-resource vmName 'Microsoft.Compute/virtualMachines@2020-12-01' = [for (vm, i) in vms: {
-  name: 'vm-${vm[i]}'
-  location: location
+resource vmNameResource 'Microsoft.Compute/virtualMachines@2020-12-01' =  [for (vm,i) in vms:{
+  name: 'vm-${vm.name}'
+  location: location 
   zones: [
-    '${i+1}'
+    '1'
   ]
   properties: {
     hardwareProfile: {
       vmSize: vmSize
     }
     osProfile: {
-      computerName: vmName_var[i]
+      computerName: 'vm-${vm.name}'
       adminUsername: adminUsername
       adminPassword: adminPassword
     }
@@ -179,18 +165,18 @@ resource vmName 'Microsoft.Compute/virtualMachines@2020-12-01' = [for (vm, i) in
     networkProfile: {
       networkInterfaces: [
         {
-          id: resourceId('Microsoft.Network/networkInterfaces', nicName_var[i])
+          id: resourceId('Microsoft.Network/networkInterfaces', 'nic-${vm.name}-${environment}-${location}')
         }
       ]
     }
   }
   dependsOn: [
-    nicName
+    nicNameResource
   ]
 }]
 
 resource vmName_0_CreateAdForest 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' = {
-  name: 'vm-${vms[0]}/CreateAdForest'
+  name: 'vm-${vms[0].name}/CreateAdForest'
   location: location
   properties: {
     publisher: 'Microsoft.Powershell'
@@ -199,7 +185,7 @@ resource vmName_0_CreateAdForest 'Microsoft.Compute/virtualMachines/extensions@2
     autoUpgradeMinorVersion: true
     settings: {
       configuration: {
-        url: '${saExisting.properties.primaryEndpoints.blob}blob-${containerName}/createADPDC.ps1.zip'
+        url: '${saExisting.properties.primaryEndpoints.blob}${containerName}/DSC/CreateADPDC.ps1.zip'
         script: 'CreateADPDC.ps1'
         function: 'CreateADPDC'
       }
@@ -217,15 +203,16 @@ resource vmName_0_CreateAdForest 'Microsoft.Compute/virtualMachines/extensions@2
           password: adminPassword
         }
       }
-    }
+    } 
   }
   dependsOn: [
-    vmName
+    vmNameResource
+    vmName_1_PepareBDC
   ]
 }
 
 resource vmName_1_PepareBDC 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' = {
-  name: 'vm-${vms[1]}/PepareBDC'
+  name: 'vm-${vms[1].name}/PepareBDC'
   location: location
   properties: {
     publisher: 'Microsoft.Powershell'
@@ -234,7 +221,7 @@ resource vmName_1_PepareBDC 'Microsoft.Compute/virtualMachines/extensions@2020-1
     autoUpgradeMinorVersion: true
     settings: {
       configuration: {
-        url: '${saExisting.properties.primaryEndpoints.blob}blob-${containerName}/PrepareADBDC.ps1.zip'
+        url: '${saExisting.properties.primaryEndpoints.blob}${containerName}/DSC/PrepareADBDC.ps1.zip'
         script: 'PrepareADBDC.ps1'
         function: 'PrepareADBDC'
       }
@@ -247,18 +234,22 @@ resource vmName_1_PepareBDC 'Microsoft.Compute/virtualMachines/extensions@2020-1
     }
   }
   dependsOn: [
-    vmName
+    vmNameResource
   ]
 }
 
 
-output nicArray array = [for (nic,i) in vms: {
-  name: nicName[i]
+output nicNameArray array = [for (nic,i) in vms: {
+  name: nicNameResource[i].name 
 }]
 
 
 output vmArray array = [for (vm,i) in vms:{
-  name: vmName[i]
+  name: vmNameResource[i]
 }]
 
-output containerOutput object = containerExt
+
+output vmNameArray array = [for (vm,i) in vms: {
+  name: vmNameResource[i].name
+}]
+//output containerOutput object = containerExt

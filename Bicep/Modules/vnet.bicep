@@ -19,12 +19,12 @@ param companyName string
 @description('products being deployed')
 param product string
 
-param virtualNetworks array
-
 @metadata({ 
   Description: 'The name of the subnet created in the new VNET' 
 })
 param subnetName string
+
+param subnets array
 
 @metadata({ 
   Description: 'The address range of the subnet created in the new VNET' 
@@ -43,24 +43,23 @@ var dhcpOptions = {
   dnsServers: DNSServerAddress
 }
 
-param subnets array
-
-
 var networkNameVar = 'vnets-${virtualNetworkName}-${environment}-${location}'
 
-var networkSecurityGroupNameNew_var = [for each in subnets: {
-  name: 'nsg-${each.name}'
-}]
 
 var nsgSecurityRules = json(loadTextContent('../params/nsgRules.json')).securityRules
 
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2020-11-01' = {
   name: networkNameVar
+  dependsOn: [
+    networkSecurityGroup
+  ]
   location: location
   properties: {
     addressSpace: {
-      addressPrefixes: virtualNetworks[0].addressPrefix
+      addressPrefixes: [
+        virtualNetworkAddressRange
+      ]
     }
     dhcpOptions: (empty(DNSServerAddress) ? json('null') : dhcpOptions)
     subnets: [ for (subnet,i) in subnets: {
@@ -68,7 +67,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2020-11-01' = {
         properties: {
           addressPrefix: subnetRange
           networkSecurityGroup: {
-            id: resourceId('Microsoft.Network/networkSecurityGroups', networkSecurityGroupNameNew_var[i].name)
+            id: resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-${subnetName}-${i+1}')
           }
       } 
     }]
@@ -76,25 +75,33 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2020-11-01' = {
 }
 
 resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2020-11-01' = [for (group,i) in subnets: {
-  name: networkSecurityGroupNameNew_var[i].name
+  name: 'nsg-${subnetName}-${i+1}'
   location: location
   properties: {
     securityRules: nsgSecurityRules
   }
 }]
 
+output subnets array = [for (name,i) in subnets: {
+  subnets: virtualNetwork.properties.subnets[i]
+}]
+
 output subnetRef array = [for (name,i) in subnets: {
   subnets: virtualNetwork.properties.subnets[i].id
 }]
 
-output subnetsArray array = [for (name,i) in subnets: {
-  subnets: virtualNetwork.properties.subnets[i]
+output subnetsIdArray array = [for (name,i) in subnets: {
+  id: virtualNetwork.properties.subnets[i].id
 }]
 
-output vnetsArray array = [for (name,i) in virtualNetworks: {
-  virtualNetworks: virtualNetwork
+output subnetsNameArray array = [for (name,i) in subnets: {
+  name: virtualNetwork.properties.subnets[i].name
 }]
 
+output subnetsRangeArray array = [for(name,i) in subnets: {
+  subnetRange: virtualNetwork.properties.subnets[0].properties.addressPrefix
+}]
+ 
 output nsgArray array = [for(name,i) in subnets: {
   nsg: networkSecurityGroup[i]
 }]
