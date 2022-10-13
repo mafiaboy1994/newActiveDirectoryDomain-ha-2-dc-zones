@@ -23,7 +23,7 @@ configuration ConfigureADBDC
             RebootNodeIfNeeded = $true
         }
         
-        xWaitForADDomain DscForestWait
+        xWaitForADDomain DscForestWait 
         {
             DomainName = $DomainName
             DomainUserCredential= $DomainCreds
